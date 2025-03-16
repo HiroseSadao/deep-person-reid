@@ -12,7 +12,7 @@ Image ReID
 
 
 .. note::
-    The ``split_id`` argument is defined in ``ImageDataManager`` and ``VideoDataManager``. Please refer to :ref:`torchreid_data`.
+    The ``split_id`` argument is defined in ``ImageDataManager`` and ``VideoDataManager``. Please refer to :ref:`new_torchreid_data`.
 
 
 Video ReID

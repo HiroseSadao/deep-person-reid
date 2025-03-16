@@ -7,7 +7,7 @@ Here we provide a comprehensive guide on how to prepare the datasets.
 
 Suppose you want to store the reid data in a directory called "path/to/reid-data/", you need to specify the ``root`` as *root='path/to/reid-data/'* when initializing ``DataManager``. Below we use ``$REID`` to denote "path/to/reid-data".
 
-Please refer to :ref:`torchreid_data` for details regarding the arguments.
+Please refer to :ref:`new_torchreid_data` for details regarding the arguments.
 
 
 .. note::

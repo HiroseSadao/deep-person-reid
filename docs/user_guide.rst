@@ -12,7 +12,7 @@ See :ref:`datasets`.
 
 Find model keys
 -----------------
-Keys are listed under the *Public keys* section within each model class in :ref:`torchreid_models`.
+Keys are listed under the *Public keys* section within each model class in :ref:`new_torchreid_models`.
 
 
 Show available models
@@ -20,8 +20,8 @@ Show available models
 
 .. code-block:: python
     
-    import torchreid
-    torchreid.models.show_avai_models()
+    import new_torchreid
+    new_torchreid.models.show_avai_models()
 
 
 Change the training sampler
@@ -31,7 +31,7 @@ The default ``train_sampler`` is "RandomSampler". You can give the specific samp
 
 Choose an optimizer/lr_scheduler
 ----------------------------------
-Please refer to the source code of ``build_optimizer``/``build_lr_scheduler`` in :ref:`torchreid_optim` for details.
+Please refer to the source code of ``build_optimizer``/``build_lr_scheduler`` in :ref:`new_torchreid_optim` for details.
 
 
 Resume training
@@ -40,7 +40,7 @@ Suppose the checkpoint is saved in "log/resnet50/model.pth.tar-30", you can do
 
 .. code-block:: python
     
-    start_epoch = torchreid.utils.resume_from_checkpoint(
+    start_epoch = new_torchreid.utils.resume_from_checkpoint(
         'log/resnet50/model.pth.tar-30',
         model,
         optimizer
@@ -55,11 +55,11 @@ Suppose the checkpoint is saved in "log/resnet50/model.pth.tar-30", you can do
 
 Compute model complexity
 --------------------------
-We provide a tool in ``torchreid.utils.model_complexity.py`` to automatically compute the model complexity, i.e. number of parameters and FLOPs.
+We provide a tool in ``new_torchreid.utils.model_complexity.py`` to automatically compute the model complexity, i.e. number of parameters and FLOPs.
 
 .. code-block:: python
     
-    from torchreid import models, utils
+    from new_torchreid import models, utils
     
     model = models.build_model(name='resnet50', num_classes=1000)
     num_params, flops = utils.compute_model_complexity(model, (1, 3, 256, 128))
@@ -79,7 +79,7 @@ Easy. Just give whatever datasets (keys) you want to the ``sources`` argument wh
 
 .. code-block:: python
     
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources=['market1501', 'dukemtmcreid', 'cuhk03', 'msmt17'],
         height=256,
@@ -87,7 +87,7 @@ Easy. Just give whatever datasets (keys) you want to the ``sources`` argument wh
         batch_size=32
     )
 
-In this example, the target datasets are Market1501, DukeMTMC-reID, CUHK03 and MSMT17 as the ``targets`` argument is not specified. Please refer to ``Engine.test()`` in :ref:`torchreid_engine` for details regarding how evaluation is performed.
+In this example, the target datasets are Market1501, DukeMTMC-reID, CUHK03 and MSMT17 as the ``targets`` argument is not specified. Please refer to ``Engine.test()`` in :ref:`new_torchreid_engine` for details regarding how evaluation is performed.
 
 
 Do cross-dataset evaluation
@@ -96,7 +96,7 @@ Easy. Just give whatever datasets (keys) you want to the argument ``targets``, l
 
 .. code-block:: python
     
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources='market1501',
         targets='dukemtmcreid', # or targets='cuhk03' or targets=['dukemtmcreid', 'cuhk03']
@@ -112,7 +112,7 @@ This can be easily done by setting ``combineall=True`` when instantiating a data
 
 .. code-block:: python
     
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources='market1501',
         height=256,
@@ -151,7 +151,7 @@ with ``combineall=True``, you will get
 
 Optimize layers with different learning rates
 -----------------------------------------------
-A common practice for fine-tuning pretrained models is to use a smaller learning rate for base layers and a large learning rate for randomly initialized layers (referred to as ``new_layers``). ``torchreid.optim.optimizer`` has implemented such feature. What you need to do is to set ``staged_lr=True`` and give the names of ``new_layers`` such as "classifier".
+A common practice for fine-tuning pretrained models is to use a smaller learning rate for base layers and a large learning rate for randomly initialized layers (referred to as ``new_layers``). ``new_torchreid.optim.optimizer`` has implemented such feature. What you need to do is to set ``staged_lr=True`` and give the names of ``new_layers`` such as "classifier".
 
 Below is an example of setting different learning rates for base layers and new layers in ResNet50,
 
@@ -159,7 +159,7 @@ Below is an example of setting different learning rates for base layers and new 
     
     # New layer "classifier" has a learning rate of 0.01
     # The base layers have a learning rate of 0.001
-    optimizer = torchreid.optim.build_optimizer(
+    optimizer = new_torchreid.optim.build_optimizer(
         model,
         optim='sgd',
         lr=0.01,
@@ -168,14 +168,14 @@ Below is an example of setting different learning rates for base layers and new 
         base_lr_mult=0.1
     )
 
-Please refer to :ref:`torchreid_optim` for more details.
+Please refer to :ref:`new_torchreid_optim` for more details.
 
 
 Do two-stepped transfer learning
 -------------------------------------
 To prevent the pretrained layers from being damaged by harmful gradients back-propagated from randomly initialized layers, one can adopt the *two-stepped transfer learning strategy* presented in `Deep Transfer Learning for Person Re-identification <https://arxiv.org/abs/1611.05244>`_. The basic idea is to pretrain the randomly initialized layers for few epochs while keeping the base layers frozen before training all layers end-to-end.
 
-This has been implemented in ``Engine.train()`` (see :ref:`torchreid_engine`). The arguments related to this feature are ``fixbase_epoch`` and ``open_layers``. Intuitively, ``fixbase_epoch`` denotes the number of epochs to keep the base layers frozen; ``open_layers`` means which layer is open for training.
+This has been implemented in ``Engine.train()`` (see :ref:`new_torchreid_engine`). The arguments related to this feature are ``fixbase_epoch`` and ``open_layers``. Intuitively, ``fixbase_epoch`` denotes the number of epochs to keep the base layers frozen; ``open_layers`` means which layer is open for training.
 
 For example, say you want to pretrain the classification layer named "classifier" in ResNet50 for 5 epochs before training all layers, you can do
 
@@ -198,12 +198,12 @@ Note that ``fixbase_epoch`` is counted into ``max_epoch``. In the above example,
 
 Test a trained model
 ----------------------
-You can load a trained model using :code:`torchreid.utils.load_pretrained_weights(model, weight_path)` and set ``test_only=True`` in ``engine.run()``.
+You can load a trained model using :code:`new_torchreid.utils.load_pretrained_weights(model, weight_path)` and set ``test_only=True`` in ``engine.run()``.
 
 
 Fine-tune a model pre-trained on reid datasets
 -----------------------------------------------
-Use :code:`torchreid.utils.load_pretrained_weights(model, weight_path)` to load the pre-trained weights and then fine-tune on the dataset you want.
+Use :code:`new_torchreid.utils.load_pretrained_weights(model, weight_path)` to load the pre-trained weights and then fine-tune on the dataset you want.
 
 
 Visualize learning curves with tensorboard
@@ -241,7 +241,7 @@ The output will look like (from left to right: image, activation map, overlapped
 
 
 .. note::
-    In order to visualize activation maps, the CNN needs to output the last convolutional feature maps at eval mode. See ``torchreid/models/osnet.py`` for example.
+    In order to visualize activation maps, the CNN needs to output the last convolutional feature maps at eval mode. See ``new_torchreid/models/osnet.py`` for example.
 
 
 Use your own dataset
@@ -258,7 +258,7 @@ Use your own dataset
     import os
     import os.path as osp
 
-    from torchreid.data import ImageDataset
+    from new_torchreid.data import ImageDataset
 
 
     class NewDataset(ImageDataset):
@@ -293,8 +293,8 @@ Use your own dataset
 
 .. code-block:: python
     
-    import torchreid
-    torchreid.data.register_image_dataset('new_dataset', NewDataset)
+    import new_torchreid
+    new_torchreid.data.register_image_dataset('new_dataset', NewDataset)
 
 
 3. Initialize a data manager with your dataset.
@@ -302,17 +302,17 @@ Use your own dataset
 .. code-block:: python
     
     # use your own dataset only
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources='new_dataset'
     )
     # combine with other datasets
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources=['new_dataset', 'dukemtmcreid']
     )
     # cross-dataset evaluation
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root='reid-data',
         sources=['new_dataset', 'dukemtmcreid'],
         targets='market1501' # or targets=['market1501', 'cuhk03']
@@ -322,16 +322,16 @@ Use your own dataset
 
 Design your own Engine
 ------------------------
-A new Engine should be designed if you have your own loss function. The base Engine class ``torchreid.engine.Engine`` has implemented some generic methods which you can inherit to avoid re-writing. Please refer to the source code for more details. You are suggested to see how ``ImageSoftmaxEngine`` and ``ImageTripletEngine`` are constructed (also ``VideoSoftmaxEngine`` and ``VideoTripletEngine``). All you need to implement might be just a ``forward_backward()`` function.
+A new Engine should be designed if you have your own loss function. The base Engine class ``new_torchreid.engine.Engine`` has implemented some generic methods which you can inherit to avoid re-writing. Please refer to the source code for more details. You are suggested to see how ``ImageSoftmaxEngine`` and ``ImageTripletEngine`` are constructed (also ``VideoSoftmaxEngine`` and ``VideoTripletEngine``). All you need to implement might be just a ``forward_backward()`` function.
 
 
 Use Torchreid as a feature extractor in your projects
 -------------------------------------------------------
-We have provided a simple API for feature extraction, which accepts input of various types such as a list of image paths or numpy arrays. More details can be found in the code at ``torchreid/utils/feature_extractor.py``. Here we show a simple example of how to extract features given a list of image paths.
+We have provided a simple API for feature extraction, which accepts input of various types such as a list of image paths or numpy arrays. More details can be found in the code at ``new_torchreid/utils/feature_extractor.py``. Here we show a simple example of how to extract features given a list of image paths.
 
 .. code-block:: python
 
-    from torchreid.utils import FeatureExtractor
+    from new_torchreid.utils import FeatureExtractor
 
     extractor = FeatureExtractor(
         model_name='osnet_x1_0',

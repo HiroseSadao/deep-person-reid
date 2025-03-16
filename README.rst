@@ -51,9 +51,9 @@ What's new
 - [Aug 2020] ``v1.2.6``: Added ``RandomDomainSampler`` (it samples ``num_cams`` cameras each with ``batch_size // num_cams`` images to form a mini-batch).
 - [Jun 2020] ``v1.2.5``: (1) Dataloader's output from ``__getitem__`` has been changed from ``list`` to ``dict``. Previously, an element, e.g. image tensor, was fetched with ``imgs=data[0]``. Now it should be obtained by ``imgs=data['img']``. See this `commit <https://github.com/KaiyangZhou/deep-person-reid/commit/aefe335d68f39a20160860e6d14c2d34f539b8a5>`_ for detailed changes. (2) Added ``k_tfm`` as an option to image data loader, which allows data augmentation to be applied ``k_tfm`` times *independently* to an image. If ``k_tfm > 1``, ``imgs=data['img']`` returns a list with ``k_tfm`` image tensors.
 - [May 2020] Added the person attribute recognition code used in `Omni-Scale Feature Learning for Person Re-Identification (ICCV'19) <https://arxiv.org/abs/1905.00953>`_. See ``projects/attribute_recognition/``.
-- [May 2020] ``v1.2.1``: Added a simple API for feature extraction (``torchreid/utils/feature_extractor.py``). See the `documentation <https://kaiyangzhou.github.io/deep-person-reid/user_guide.html>`_ for the instruction.
+- [May 2020] ``v1.2.1``: Added a simple API for feature extraction (``new_torchreid/utils/feature_extractor.py``). See the `documentation <https://kaiyangzhou.github.io/deep-person-reid/user_guide.html>`_ for the instruction.
 - [Apr 2020] Code for reproducing the experiments of `deep mutual learning <https://zpascal.net/cvpr2018/Zhang_Deep_Mutual_Learning_CVPR_2018_paper.pdf>`_ in the `OSNet paper <https://arxiv.org/pdf/1905.00953v6.pdf>`__ (Supp. B) has been released at ``projects/DML``.
-- [Apr 2020] Upgraded to ``v1.2.0``. The engine class has been made more model-agnostic to improve extensibility. See `Engine <torchreid/engine/engine.py>`_ and `ImageSoftmaxEngine <torchreid/engine/image/softmax.py>`_ for more details. Credit to `Dassl.pytorch <https://github.com/KaiyangZhou/Dassl.pytorch>`_.
+- [Apr 2020] Upgraded to ``v1.2.0``. The engine class has been made more model-agnostic to improve extensibility. See `Engine <new_torchreid/engine/engine.py>`_ and `ImageSoftmaxEngine <new_torchreid/engine/image/softmax.py>`_ for more details. Credit to `Dassl.pytorch <https://github.com/KaiyangZhou/Dassl.pytorch>`_.
 - [Dec 2019] Our `OSNet paper <https://arxiv.org/pdf/1905.00953v6.pdf>`_ has been updated, with additional experiments (in section B of the supplementary) showing some useful techniques for improving OSNet's performance in practice.
 - [Nov 2019] ``ImageDataManager`` can load training data from target datasets by setting ``load_train_targets=True``, and the train-loader can be accessed with ``train_loader_t = datamanager.train_loader_t``. This feature is useful for domain adaptation research.
 
@@ -71,8 +71,8 @@ Make sure `conda <https://www.anaconda.com/distribution/>`_ is installed.
 
     # create environment
     cd deep-person-reid/
-    conda create --name torchreid python=3.7
-    conda activate torchreid
+    conda create --name new_torchreid python=3.7
+    conda activate new_torchreid
 
     # install dependencies
     # make sure `which python` and `which pip` point to the correct path
@@ -81,7 +81,7 @@ Make sure `conda <https://www.anaconda.com/distribution/>`_ is installed.
     # install torch and torchvision (select the proper cuda version to suit your machine)
     conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
 
-    # install torchreid (don't need to re-build it if you modify the source code)
+    # install new_torchreid (don't need to re-build it if you modify the source code)
     python setup.py develop
 
 Another way to install is to run everything inside docker container:
@@ -91,17 +91,17 @@ Another way to install is to run everything inside docker container:
 
 Get started: 30 seconds to Torchreid
 -------------------------------------
-1. Import ``torchreid``
+1. Import ``new_torchreid``
 
 .. code-block:: python
     
-    import torchreid
+    import new_torchreid
 
 2. Load data manager
 
 .. code-block:: python
     
-    datamanager = torchreid.data.ImageDataManager(
+    datamanager = new_torchreid.data.ImageDataManager(
         root="reid-data",
         sources="market1501",
         targets="market1501",
@@ -116,7 +116,7 @@ Get started: 30 seconds to Torchreid
 
 .. code-block:: python
     
-    model = torchreid.models.build_model(
+    model = new_torchreid.models.build_model(
         name="resnet50",
         num_classes=datamanager.num_train_pids,
         loss="softmax",
@@ -125,13 +125,13 @@ Get started: 30 seconds to Torchreid
 
     model = model.cuda()
 
-    optimizer = torchreid.optim.build_optimizer(
+    optimizer = new_torchreid.optim.build_optimizer(
         model,
         optim="adam",
         lr=0.0003
     )
 
-    scheduler = torchreid.optim.build_lr_scheduler(
+    scheduler = new_torchreid.optim.build_lr_scheduler(
         optimizer,
         lr_scheduler="single_step",
         stepsize=20
@@ -141,7 +141,7 @@ Get started: 30 seconds to Torchreid
 
 .. code-block:: python
     
-    engine = torchreid.engine.ImageSoftmaxEngine(
+    engine = new_torchreid.engine.ImageSoftmaxEngine(
         datamanager,
         model,
         optimizer=optimizer,
@@ -300,7 +300,7 @@ If you use this code or the models in your research, please give credit to the f
 
 .. code-block:: bash
 
-    @article{torchreid,
+    @article{new_torchreid,
       title={Torchreid: A Library for Deep Learning Person Re-Identification in Pytorch},
       author={Zhou, Kaiyang and Xiang, Tao},
       journal={arXiv preprint arXiv:1910.10093},

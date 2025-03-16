@@ -15,4 +15,4 @@ ignore =
     # isort found an import in the wrong position
     I001
 max-line-length = 79
-exclude = __init__.py, build, torchreid/metrics/rank_cylib/
+exclude = __init__.py, build, new_torchreid/metrics/rank_cylib/
